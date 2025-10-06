@@ -30,9 +30,11 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: vamanrathod199/devsecops-app:latest
+          tags: vamanrathod24/VoiceOwL-app:latest
           labels: type=semver
+          login: true
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
 
+      
