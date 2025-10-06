@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./app
+
+      - name: Run Static Code Analysis (Semgrep)
+        uses: returntocorp/semgrep-action@v1
+
+      - name: Docker Build, Scan, and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: ./app
+          push: true
+          tags: <DOCKERHUB_USERNAME>/devsecops-app:latest
+          labels: type=semver
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Deploy to Kubernetes
+        uses: appleboy/kubernetes-action@v0.3.4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          manifests: |
+            ./k8s/deployment.yaml
+            ./k8s/service.yaml
