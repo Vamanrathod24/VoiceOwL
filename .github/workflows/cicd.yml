@@ -30,7 +30,7 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: <DOCKERHUB_USERNAME>/devsecops-app:latest
+          tags: vamanrathod199/devsecops-app:latest
           labels: type=semver
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
