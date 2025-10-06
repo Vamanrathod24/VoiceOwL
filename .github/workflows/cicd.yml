@@ -54,11 +54,10 @@ jobs:
           tags: vamanrathod199/voiceowl-app-1:latest
           labels: type=semver
 
-      # Deploy to Kubernetes
       - name: Deploy to Kubernetes
-        uses: appleboy/kubernetes-action@v0
+        uses: appleboy/kubernetes-action@v0.7.0
         with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          kubeconfig: $HOME/.kube/config
           manifests: |
             ./k8s/deployment.yaml
             ./k8s/service.yaml
