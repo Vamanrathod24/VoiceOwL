@@ -53,8 +53,6 @@ jobs:
           push: true
           tags: vamanrathod199/voiceowl-app-1:latest
           labels: type=semver
-          cache-from: type=registry,ref=vamanrathod199/voiceowl-app-1:cache
-          cache-to: type=registry,ref=vamanrathod199/voiceowl-app-1:cache,mode=max
 
       # 8️⃣ Setup Terraform
       - name: Setup Terraform
