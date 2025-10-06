@@ -42,10 +42,10 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: vamanrathod199/voiceowl-app:latest
+          tags: vamanrathod199/voiceowl-app-1:latest
           labels: type=semver
-          
-       # 7️⃣ Setup Terraform    
+
+      # 7️⃣ Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         with:
@@ -54,8 +54,13 @@ jobs:
       # 8️⃣ Terraform Init & Plan
       - name: Terraform Init and Plan
         working-directory: ./infra
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
         run: |
           terraform init
-          terraform plan -out=tfplan    
+          terraform plan -out=tfplan
 
-    
+     
+          terraform apply -auto-approve tfplan
