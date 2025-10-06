@@ -30,7 +30,7 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: vamanrathod24/VoiceOwL-app:latest
+          tags: vamanrathod24/voiceowl-app:latest
           labels: type=semver
           login: true
         env:
