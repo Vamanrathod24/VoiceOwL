@@ -54,9 +54,9 @@ jobs:
           tags: vamanrathod199/voiceowl-app-1:latest
           labels: type=semver
 
-      # 1️⃣2️⃣ Deploy to Kubernetes k8s
-      - name: Deploy to Kubernetes
+      - name: Apply Kubernetes manifests
         run: |
-          kubectl apply -f ./k8s/deployment.yaml
-          kubectl apply -f ./k8s/service.yaml
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > kubeconfig
+          kubectl --kubeconfig=kubeconfig apply -f ./k8s/deployment.yaml
+
 
