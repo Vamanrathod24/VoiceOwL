@@ -91,7 +91,7 @@ jobs:
 
       # 1️⃣2️⃣ Deploy to Kubernetes
       - name: Deploy to Kubernetes
-        uses: appleboy/kubernetes-action@v0.3.4
+        uses: appleboy/kubernetes-action@v0
         with:
           kubeconfig: $HOME/.kube/config
           manifests: |
