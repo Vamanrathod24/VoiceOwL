@@ -44,5 +44,18 @@ jobs:
           push: true
           tags: vamanrathod199/voiceowl-app:latest
           labels: type=semver
+          
+       # 7️⃣ Setup Terraform    
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.9.4
+
+      # 8️⃣ Terraform Init & Plan
+      - name: Terraform Init and Plan
+        working-directory: ./infra
+        run: |
+          terraform init
+          terraform plan -out=tfplan    
 
     
