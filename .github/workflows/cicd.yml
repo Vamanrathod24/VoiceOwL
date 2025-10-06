@@ -1,27 +1,55 @@
-- name: Checkout repository
-  uses: actions/checkout@v3
+name: CI/CD Pipeline
 
-- name: Setup Node.js
-  uses: actions/setup-node@v3
-  with:
-    node-version: 18
+on:
+  push:
+    branches:
+      - main
 
-- name: Install dependencies
-  run: npm install
-  working-directory: ./app
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-- name: Semgrep Scan
-  uses: returntocorp/semgrep-action@v1
+    steps:
+      # 1️⃣ Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-- name: Docker Hub Login
-  uses: docker/login-action@v2
-  with:
-    username: ${{ secrets.DOCKERHUB_USERNAME }}
-    password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
 
-- name: Build & Push Docker Image
-  uses: docker/build-push-action@v3
-  with:
-    context: ./app
-    push: true
-    tags: vamanrathod24/voiceowl-app:latest
+      # 3️⃣ Install npm dependencies
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./app
+
+      # 4️⃣ Run static code analysis (Semgrep)
+      - name: Run Static Code Analysis (Semgrep)
+        uses: returntocorp/semgrep-action@v1
+
+      # 5️⃣ Login to Docker Hub
+      - name: Docker Hub Login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # 6️⃣ Build and push Docker image
+      - name: Build & Push Docker Image
+        uses: docker/build-push-action@v3
+        with:
+          context: ./app
+          push: true
+          tags: vamanrathod24/voiceowl-app:latest
+          labels: type=semver
+
+      # 7️⃣ Deploy to Kubernetes
+      - name: Deploy to Kubernetes
+        uses: appleboy/kubernetes-action@v0.3.4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          manifests: |
+            ./k8s/deployment.yaml
+            ./k8s/service.yaml
