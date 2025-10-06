@@ -42,7 +42,7 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: vamanrathod24/voiceowl-app:latest
+          tags: vamanrathod199/voiceowl-app:latest
           labels: type=semver
 
     
