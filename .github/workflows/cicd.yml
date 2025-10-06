@@ -54,41 +54,11 @@ jobs:
           tags: vamanrathod199/voiceowl-app-1:latest
           labels: type=semver
 
-      # 8️⃣ Setup Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.9.4
-
-      # 9️⃣ Terraform Init & Plan
-      - name: Terraform Init and Plan
-        working-directory: ./infra
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-        run: |
-          terraform init
-          terraform plan -out=tfplan
-
-      # 🔟 Terraform Apply (only on main)
-      - name: Terraform Apply
-        if: github.ref == 'refs/heads/main'
-        working-directory: ./infra
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-        run: |
-          terraform apply -auto-approve tfplan
-
-      # 1️⃣1️⃣ Decode Kubeconfig for deployment
-      - name: Decode Kubeconfig
-        run: |
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
-
-      # 1️⃣2️⃣ Deploy to Kubernetes
+      # Deploy to Kubernetes
       - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f ./k8s/deployment.yaml
-          kubectl apply -f ./k8s/service.yaml
+        uses: appleboy/kubernetes-action@v0.3.4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+          manifests: |
+            ./k8s/deployment.yaml
+            ./k8s/service.yaml
