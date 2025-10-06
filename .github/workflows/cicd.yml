@@ -1,40 +1,27 @@
-name: CI/CD Pipeline
+- name: Checkout repository
+  uses: actions/checkout@v3
 
-on:
-  push:
-    branches:
-      - main
+- name: Setup Node.js
+  uses: actions/setup-node@v3
+  with:
+    node-version: 18
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+- name: Install dependencies
+  run: npm install
+  working-directory: ./app
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+- name: Semgrep Scan
+  uses: returntocorp/semgrep-action@v1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+- name: Docker Hub Login
+  uses: docker/login-action@v2
+  with:
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./app
-
-      - name: Run Static Code Analysis (Semgrep)
-        uses: returntocorp/semgrep-action@v1
-
-      - name: Docker Build, Scan, and Push
-        uses: docker/build-push-action@v3
-        with:
-          context: ./app
-          push: true
-          tags: vamanrathod24/voiceowl-app:latest
-          labels: type=semver
-          login: true
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      
+- name: Build & Push Docker Image
+  uses: docker/build-push-action@v3
+  with:
+    context: ./app
+    push: true
+    tags: vamanrathod24/voiceowl-app:latest
