@@ -7,6 +7,7 @@ spec:
     app: devsecops-app
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 3000
-  type: ClusterIP
+      port: 80        # Service port
+      targetPort: 3000 # Pod port
+      nodePort: 30080  # NodePort (must be between 30000-32767)
+  type: NodePort
