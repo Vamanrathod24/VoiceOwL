@@ -9,5 +9,5 @@ spec:
     - protocol: TCP
       port: 80        # Service port
       targetPort: 3000 # Pod port
-      nodePort: 30082  # NodePort (must be between 30000-32767)
+      nodePort: 30083  # NodePort (must be between 30000-32767)
   type: NodePort
