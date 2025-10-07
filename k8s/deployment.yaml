@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nodejs-app
-        image: vamanrathod199/voiceowl-app-1
+        image: ubuntu/nginx:1.18-20.04_beta
         ports:
         - containerPort: 3000
         env:
