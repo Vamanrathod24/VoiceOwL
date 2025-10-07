@@ -72,7 +72,7 @@ Access application
 
 kubectl get nodes -o wide
 kubectl get svc
-http://<NodePublicIP>:<NodePort>
+https://100.25.246.20:30080/
 
 
 
